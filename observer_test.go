@@ -7,12 +7,15 @@ import (
 )
 
 type MockNotifyConn struct {
-	Called bool
+	Called       bool
+	CloseHandler func(int, string) error
 }
 
-func (c *MockNotifyConn) Write(b []byte) (int, error) {
+func (c MockNotifyConn) SetCloseHandler(fn func(int, string) error) {}
+
+func (c *MockNotifyConn) WriteMessage(t int, p []byte) error {
 	c.Called = true
-	return 0, nil
+	return nil
 }
 
 func TestNewEvent(t *testing.T) {
@@ -58,6 +61,6 @@ func TestObserverNotify(t *testing.T) {
 		t.Fatal(err)
 	}
 	if conn.Called != true {
-		t.Fatal("expected observer Write to have been called")
+		t.Fatal("expected observer write message to have been called")
 	}
 }

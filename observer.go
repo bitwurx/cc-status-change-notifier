@@ -7,12 +7,6 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-// Conn contains methods for interacting with network sockets.
-type Conn interface {
-	// Write sends the binary message to the socket connection.
-	Write([]byte) (int, error)
-}
-
 // Event contains the details of a status change event.
 type Event struct {
 	// Kind is the type of status change event.
@@ -46,7 +40,7 @@ type Observer struct {
 // Notify sends the event data to the remote observer.
 func (obs *Observer) Notify(evt *Event) error {
 	data, _ := json.Marshal(evt)
-	_, err := obs.Conn.Write(data)
+	err := obs.Conn.WriteMessage(1, data)
 	return err
 }
 

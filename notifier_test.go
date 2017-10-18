@@ -1,8 +1,15 @@
 package main
 
 import (
+	"errors"
+	"io/ioutil"
+	"log"
 	"testing"
 )
+
+func init() {
+	log.SetOutput(ioutil.Discard)
+}
 
 func TestNewStatusChangeNotifier(t *testing.T) {
 	NewStatusChangeNotifier()
@@ -10,8 +17,10 @@ func TestNewStatusChangeNotifier(t *testing.T) {
 
 type MockTestStatusChangeNotifierAddObserverConn struct{}
 
-func (c MockTestStatusChangeNotifierAddObserverConn) Write(b []byte) (int, error) {
-	return 0, nil
+func (c MockTestStatusChangeNotifierAddObserverConn) SetCloseHandler(fn func(int, string) error) {}
+
+func (c MockTestStatusChangeNotifierAddObserverConn) WriteMessage(t int, p []byte) error {
+	return nil
 }
 
 func TestStatusChangeNotifierAddObserver(t *testing.T) {
@@ -33,10 +42,23 @@ func TestStatusChangeNotifierAddObserver(t *testing.T) {
 	}
 }
 
+func TestStatusChangeNotifierCloseHandler(t *testing.T) {
+	conn := &MockTestStatusChangeNotifierAddObserverConn{}
+	observer, err := NewObserver([]byte(`{"events": ["test"]}`), conn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	notifier := NewStatusChangeNotifier()
+	notifier.AddObserver(observer)
+	notifier.CloseHandler(observer)(0, "")
+}
+
 type MockTestStatusChangeNotifierRemoveObserverConn struct{}
 
-func (c MockTestStatusChangeNotifierRemoveObserverConn) Write(b []byte) (int, error) {
-	return 0, nil
+func (c MockTestStatusChangeNotifierRemoveObserverConn) SetCloseHandler(func(int, string) error) {}
+
+func (c MockTestStatusChangeNotifierRemoveObserverConn) WriteMessage(t int, p []byte) error {
+	return nil
 }
 
 func TestStatusChangeNotifierRemoveObserver(t *testing.T) {
@@ -58,11 +80,17 @@ func TestStatusChangeNotifierRemoveObserver(t *testing.T) {
 
 type MockTestStatusChangeNotifierNotifyConn struct {
 	Called bool
+	err    bool
 }
 
-func (c *MockTestStatusChangeNotifierNotifyConn) Write(b []byte) (int, error) {
+func (c MockTestStatusChangeNotifierNotifyConn) SetCloseHandler(func(int, string) error) {}
+
+func (c *MockTestStatusChangeNotifierNotifyConn) WriteMessage(t int, p []byte) error {
+	if c.err == true {
+		return errors.New("error")
+	}
 	c.Called = true
-	return 0, nil
+	return nil
 }
 
 func TestStatusChangeNotifierNotify(t *testing.T) {
@@ -87,10 +115,13 @@ func TestStatusChangeNotifierNotify(t *testing.T) {
 		t.Fatal("expected observer2 to have been called")
 	}
 	notifier.AddObserver(observer1)
-	notifier.RemoveObserver(observer1)
+	conn1.err = true
 	evt, err = NewEvent([]byte(`{"kind": "ev1"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
 	notifier.Notify(evt)
+	if conn1.Called == true {
+		t.Fatal("expected observer1 to not have been called")
+	}
 }
