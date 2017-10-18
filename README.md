@@ -25,10 +25,10 @@ This service uses the [JSON-RPC 2.0 Spec](http://www.jsonrpc.org/specification) 
 
 kind - (*String*) the event type.
 
-created - (*String*) the creation time of the event.
+created - (*String*) the creation time of the event.  
 <sub><sup>*[RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format (ie. 1996-12-19T16:39:57-08:00)*</sup></sub>.
 
-meta - (*Object*) a request defined json object that contains metadata about the event.
+runAt - (*String*) the execution point in time of the task.
 
 #### Returns:
 (*Number*) 0 on success or -1 on failure
