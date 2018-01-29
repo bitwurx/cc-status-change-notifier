@@ -14,7 +14,7 @@ type Event struct {
 	// Meta is passthrough data about the event.
 	Kind    string          `json:"kind"`
 	Created time.Time       `json:"created"`
-	Meta    json.RawMessage `json:"meta'`
+	Meta    json.RawMessage `json:"meta"`
 }
 
 // NewEvent create a new event instance from the provided data.
@@ -48,7 +48,8 @@ func (obs *Observer) Notify(evt *Event) error {
 //
 // the observer is assigned a system generated version 1 uuid.
 func NewObserver(data []byte, conn Conn) (*Observer, error) {
-	obs := &Observer{Id: uuid.NewV1().String(), Conn: conn}
+	id, _ := uuid.NewV1()
+	obs := &Observer{Id: id.String(), Conn: conn}
 	if err := json.Unmarshal(data, obs); err != nil {
 		return nil, err
 	}
