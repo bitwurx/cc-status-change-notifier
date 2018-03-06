@@ -37,7 +37,7 @@ runAt - (*String*) the execution point in time of the task.
 
 A service can connect as an *observer* to the status change notifier using websockets to receive events.  The connection procedure is as follows:
 
-- Establish a websocket connection to the status change notifier at the /observers path. *(ex. http://status-change-notifer/observers)*
+- Establish a websocket connection to the status change notifier at the /observers path. *(ex. ws://status-change-notifer/observers)*
 - Once the connection is established the status change notifier will accept a single message containing an array of the event types that the connecting service should be subscribed to. *(ex. ['SomeEvent', 'AnotherEvent'])*
 - Once the event types array has been received the status change notifier will begin to forward events with that match the subscribed event types to the service.
 - Events will be sent to the listening service with the JSON schema:
