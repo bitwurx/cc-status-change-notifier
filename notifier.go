@@ -75,7 +75,13 @@ func (n *StatusChangeNotifier) Notify(evt *Event) {
 				log.Println("notify error:", err)
 				n.RemoveObserver(obs)
 			} else {
-				log.Println(fmt.Sprintf("notify [%v] - event %v", obs.Id, evt))
+				log.Println(fmt.Sprintf(
+					"notify [%v] - event %s %s %s",
+					obs.Id,
+					evt.Kind,
+					evt.Created,
+					evt.Meta,
+				))
 			}
 		}
 	}
