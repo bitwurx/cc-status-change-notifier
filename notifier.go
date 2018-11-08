@@ -66,7 +66,7 @@ func (n *StatusChangeNotifier) RemoveObserver(obs *Observer) {
 // Notify broadcasts the event to all observers that subscribe to the
 // provided event.
 func (n *StatusChangeNotifier) Notify(evt *Event) {
-	log.Println(fmt.Sprintf("received event: [%v] %v - %v",
+	log.Println(fmt.Sprintf("received event: [%s] %s - %s",
 		evt.Kind, evt.Created, string(evt.Meta)))
 
 	for _, obs := range n.observers[evt.Kind] {
@@ -75,7 +75,13 @@ func (n *StatusChangeNotifier) Notify(evt *Event) {
 				log.Println("notify error:", err)
 				n.RemoveObserver(obs)
 			} else {
-				log.Println(fmt.Sprintf("notify [%v] - event %v", obs.Id, evt))
+				log.Println(fmt.Sprintf(
+					"notify [%v] - event %s %s %s",
+					obs.Id,
+					evt.Kind,
+					evt.Created,
+					evt.Meta,
+				))
 			}
 		}
 	}
