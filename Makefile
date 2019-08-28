@@ -7,7 +7,7 @@ build:
 		-w /usr/src/concord-status-change-notifier \
 		golang /bin/sh -c "go get -v -d && go build -a -installsuffix cgo -o main"
 	@docker build -t concord/status-change-notifier .
-	@rm main
+	@rm -f main
 
 .PHONY: test
 test:

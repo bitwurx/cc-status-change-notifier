@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 type MockNotifyConn struct {

@@ -19,7 +19,7 @@ func (c MockApiV1AddObserverConn) WriteMessage(t int, p []byte) error {
 }
 
 func TestUpgraderCheckOrigin(t *testing.T) {
-	api := NewApiV1(jrpc2.NewServer("", ""))
+	api := NewApiV1(jrpc2.NewServer("", "", nil))
 	if api.upgrader.CheckOrigin(&http.Request{}) != true {
 		t.Fatal("expected origin check to return true")
 	}
@@ -28,7 +28,7 @@ func TestUpgraderCheckOrigin(t *testing.T) {
 func TestApiV1Notify(t *testing.T) {
 	called := false
 	conn := &MockApiV1AddObserverConn{&called}
-	api := NewApiV1(jrpc2.NewServer("", ""))
+	api := NewApiV1(jrpc2.NewServer("", "", nil))
 	api.AddObserver([]byte(`["jobStatusChange"]`), conn)
 	result, errObj := api.Notify([]byte(`[]`))
 	if errObj == nil || errObj.Code != jrpc2.InvalidParamsCode {
@@ -59,7 +59,7 @@ func TestApiV1Notify(t *testing.T) {
 }
 
 func TestApiV1AddObserver(t *testing.T) {
-	api := NewApiV1(jrpc2.NewServer("", ""))
+	api := NewApiV1(jrpc2.NewServer("", "", nil))
 	if err := api.AddObserver([]byte(`"test"`), MockApiV1AddObserverConn{}); err == nil {
 		t.Fatal("expected JSON unmarshal error")
 	}
