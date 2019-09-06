@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	s := jrpc2.NewServer(":8080", "/rpc")
+	s := jrpc2.NewServer(":8080", "/rpc", nil)
 	api := NewApiV1(s)
 	http.HandleFunc("/observers", api.ObserverHandler)
 	s.Start()

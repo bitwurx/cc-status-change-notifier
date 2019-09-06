@@ -7,7 +7,7 @@ build:
 		-w /usr/src/concord-status-change-notifier \
 		golang /bin/sh -c "go get -v -d && go build -a -installsuffix cgo -o main"
 	@docker build -t concord/status-change-notifier .
-	@rm main
+	@rm -f main
 
 .PHONY: test
 test:
@@ -17,7 +17,7 @@ test:
 		-v $(PWD)/.src:/go/src \
 		-w /go/src/concord-status-change-notifier \
 		--name concord-status-change-notifier_test \
-		golang /bin/sh -c "go get -v -t -d && go test -v"
+		golang /bin/sh -c "go get -v -t -d && go test -v -coverprofile=.coverage.out"
 	@docker logs -f concord-status-change-notifier_test
 	@docker rm -f concord-status-change-notifier_test
 
