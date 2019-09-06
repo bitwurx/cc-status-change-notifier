@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 // Event contains the details of a status change event.
