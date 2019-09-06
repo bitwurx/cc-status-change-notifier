@@ -17,7 +17,7 @@ test:
 		-v $(PWD)/.src:/go/src \
 		-w /go/src/concord-status-change-notifier \
 		--name concord-status-change-notifier_test \
-		golang /bin/sh -c "go get -v -t -d && go test -v"
+		golang /bin/sh -c "go get -v -t -d && go test -v -coverprofile=.coverage.out"
 	@docker logs -f concord-status-change-notifier_test
 	@docker rm -f concord-status-change-notifier_test
 
